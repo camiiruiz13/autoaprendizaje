@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -42,6 +43,33 @@ public class ProductoAdapter implements ProductGateway {
                     return new TechnicalException(
                             ErrorMessage.TECHNICAL_ERROR_SAVE_PRODUCTO.getCode(),
                             ErrorMessage.TECHNICAL_ERROR_SAVE_PRODUCTO.getMessage(),
+                            error
+                    );
+                });
+    }
+
+    @Override
+    public Flux<Producto> findAll() {
+        return repository.findAll()
+                .map(modelMapper::toModel)
+                .doOnSubscribe(sub -> log.info("Iniciando consulta de todos los productos..."))
+                .doOnComplete(() -> log.info("Consulta de productos completada correctamente"))
+                .onErrorMap(
+                        error -> (error instanceof MappingException || error instanceof NullPointerException),
+                        error -> {
+                            log.error("Error en el mapeo Producto ↔ Documento al listar: {}", error.getMessage(), error);
+                            return new TechnicalException(
+                                    ErrorMessage.MAPPING_ERROR_PRODUCTO.getCode(),
+                                    ErrorMessage.MAPPING_ERROR_PRODUCTO.getMessage(),
+                                    error
+                            );
+                        }
+                )
+                .onErrorMap(error -> {
+                    log.error("Error técnico general al listar productos: {}", error.getMessage(), error);
+                    return new TechnicalException(
+                            ErrorMessage.TECHNICAL_ERROR_RETRIEVE_PRODUCTO.getCode(),
+                            ErrorMessage.TECHNICAL_ERROR_RETRIEVE_PRODUCTO.getMessage(),
                             error
                     );
                 });

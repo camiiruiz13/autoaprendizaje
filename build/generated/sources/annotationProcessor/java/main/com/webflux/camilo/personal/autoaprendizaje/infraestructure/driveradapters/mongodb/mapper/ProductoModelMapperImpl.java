@@ -1,0 +1,47 @@
+package com.webflux.camilo.personal.autoaprendizaje.infraestructure.driveradapters.mongodb.mapper;
+
+import com.webflux.camilo.personal.autoaprendizaje.domain.model.Producto;
+import com.webflux.camilo.personal.autoaprendizaje.infraestructure.driveradapters.mongodb.documents.ProductoDocument;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2025-11-11T10:59:54-0500",
+    comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.14.3.jar, environment: Java 17.0.12 (Oracle Corporation)"
+)
+@Component
+public class ProductoModelMapperImpl implements ProductoModelMapper {
+
+    @Override
+    public Producto toModel(ProductoDocument productoDocument) {
+        if ( productoDocument == null ) {
+            return null;
+        }
+
+        Producto producto = new Producto();
+
+        producto.setIdProducto( productoDocument.getId() );
+        producto.setNombre( productoDocument.getNombre() );
+        producto.setPrecio( productoDocument.getPrecio() );
+        producto.setFechaCreacion( productoDocument.getFechaCreacion() );
+
+        return producto;
+    }
+
+    @Override
+    public ProductoDocument toDocument(Producto producto) {
+        if ( producto == null ) {
+            return null;
+        }
+
+        ProductoDocument productoDocument = new ProductoDocument();
+
+        productoDocument.setId( producto.getIdProducto() );
+        productoDocument.setNombre( producto.getNombre() );
+        productoDocument.setPrecio( producto.getPrecio() );
+        productoDocument.setFechaCreacion( producto.getFechaCreacion() );
+
+        return productoDocument;
+    }
+}
