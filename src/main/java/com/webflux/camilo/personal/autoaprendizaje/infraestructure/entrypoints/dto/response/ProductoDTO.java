@@ -1,4 +1,4 @@
-package com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.dto;
+package com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

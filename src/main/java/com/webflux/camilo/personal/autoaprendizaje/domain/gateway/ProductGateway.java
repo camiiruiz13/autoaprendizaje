@@ -8,4 +8,8 @@ public interface ProductGateway {
 
     Mono<Producto> saveProducto(Producto producto);
     Flux<Producto> findAll();
+
+    Mono<Producto> findById(String idProducto);
+
+    Mono<Void> delete(Producto producto);
 }
