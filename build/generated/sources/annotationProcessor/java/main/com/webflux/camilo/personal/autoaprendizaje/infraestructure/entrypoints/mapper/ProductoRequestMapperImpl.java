@@ -2,19 +2,16 @@ package com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.
 
 import com.webflux.camilo.personal.autoaprendizaje.domain.model.Producto;
 import com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.dto.request.ProductoRequestDTO;
-import com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.dto.response.ProductoDTO;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-13T10:04:37-0500",
+    date = "2025-11-15T16:45:18-0500",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.14.3.jar, environment: Java 17.0.8 (Oracle Corporation)"
 )
 @Component
-public class ProductoDTOMapperImpl implements ProductoDTOMapper {
+public class ProductoRequestMapperImpl implements ProductoRequestMapper {
 
     @Override
     public Producto toModel(ProductoRequestDTO dto) {
@@ -27,37 +24,28 @@ public class ProductoDTOMapperImpl implements ProductoDTOMapper {
         producto.setIdProducto( dto.getIdProducto() );
         producto.setNombre( dto.getNombre() );
         producto.setPrecio( dto.getPrecio() );
+        producto.setIdCategoria( dto.getIdCategoria() );
+        producto.setNombreImagen( dto.getNombreImagen() );
+        producto.setImagenBase64( dto.getImagenBase64() );
 
         return producto;
     }
 
     @Override
-    public ProductoDTO toDTO(Producto model) {
+    public ProductoRequestDTO toRequest(Producto model) {
         if ( model == null ) {
             return null;
         }
 
-        ProductoDTO productoDTO = new ProductoDTO();
+        ProductoRequestDTO productoRequestDTO = new ProductoRequestDTO();
 
-        productoDTO.setIdProducto( model.getIdProducto() );
-        productoDTO.setNombre( model.getNombre() );
-        productoDTO.setPrecio( model.getPrecio() );
-        productoDTO.setFechaCreacion( model.getFechaCreacion() );
+        productoRequestDTO.setIdProducto( model.getIdProducto() );
+        productoRequestDTO.setNombre( model.getNombre() );
+        productoRequestDTO.setPrecio( model.getPrecio() );
+        productoRequestDTO.setIdCategoria( model.getIdCategoria() );
+        productoRequestDTO.setNombreImagen( model.getNombreImagen() );
+        productoRequestDTO.setImagenBase64( model.getImagenBase64() );
 
-        return productoDTO;
-    }
-
-    @Override
-    public List<ProductoDTO> toDTOList(List<Producto> models) {
-        if ( models == null ) {
-            return null;
-        }
-
-        List<ProductoDTO> list = new ArrayList<ProductoDTO>( models.size() );
-        for ( Producto producto : models ) {
-            list.add( toDTO( producto ) );
-        }
-
-        return list;
+        return productoRequestDTO;
     }
 }

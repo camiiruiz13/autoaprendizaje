@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -21,5 +22,11 @@ public class ProductoDTO {
 
     private Double precio;
 
-    private Date fechaCreacion;
+    private LocalDateTime fechaCreacion;
+
+    private CategoriaDTO categoria;
+
+    private String nombreImagen;
+
+    private String imagenBase64;
 }

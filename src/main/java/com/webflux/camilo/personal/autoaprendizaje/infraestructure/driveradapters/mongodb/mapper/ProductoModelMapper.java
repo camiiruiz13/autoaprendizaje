@@ -2,26 +2,28 @@ package com.webflux.camilo.personal.autoaprendizaje.infraestructure.driveradapte
 
 import com.webflux.camilo.personal.autoaprendizaje.domain.model.Producto;
 import com.webflux.camilo.personal.autoaprendizaje.infraestructure.driveradapters.mongodb.documents.ProductoDocument;
-import org.mapstruct.AfterMapping;
+import org.bson.types.ObjectId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface ProductoModelMapper {
 
-    @Mapping(source = "id", target = "idProducto")
-    Producto toModel(ProductoDocument productoDocument);
+    @Mapping(source = "id", target = "idProducto", qualifiedByName = "objectIdToString")
+    Producto toModel(ProductoDocument document);
 
-    @Mapping(source = "idProducto", target = "id")
-    ProductoDocument toDocument(Producto producto);
+    @Mapping(source = "idProducto", target = "id", qualifiedByName = "stringToObjectId")
+    ProductoDocument toDocument(Producto model);
 
-    @AfterMapping
-    default void normalizeId(Producto source, @MappingTarget ProductoDocument target) {
-
-        if (source.getIdProducto() == null || source.getIdProducto().isBlank()) {
-            target.setId(null);
-        }
+    @Named("objectIdToString")
+    static String objectIdToString(ObjectId id) {
+        return id != null ? id.toHexString() : null;
     }
 
+    @Named("stringToObjectId")
+    static ObjectId stringToObjectId(String id) {
+        return (id != null && !id.isBlank()) ? new ObjectId(id) : null;
+    }
 }
+

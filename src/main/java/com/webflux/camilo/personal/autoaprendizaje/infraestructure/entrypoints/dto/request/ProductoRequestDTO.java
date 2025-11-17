@@ -19,4 +19,11 @@ public class ProductoRequestDTO {
     @NotNull(message = "El precio es obligatorio")
     @Positive(message = "El precio debe ser mayor que 0")
     private Double precio;
+
+    @NotBlank(message = "Debe seleccionar una categoría")
+    private String idCategoria;
+
+    private String nombreImagen;
+
+    private String imagenBase64;
 }

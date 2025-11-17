@@ -1,9 +1,11 @@
 package com.webflux.camilo.personal.autoaprendizaje.infraestructure.driveradapters.mongodb.documents;
 
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -11,12 +13,19 @@ import java.util.Date;
 public class ProductoDocument {
 
     @Id
-    private String id;
+    private ObjectId id;
+
 
     private String nombre;
 
     private Double precio;
 
-    private Date fechaCreacion;
+    private LocalDateTime fechaCreacion;;
+
+    private String idCategoria;
+
+    private String nombreImagen;
+
+    private String imagenBase64;
 
 }

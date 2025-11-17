@@ -7,12 +7,11 @@ import com.webflux.camilo.personal.autoaprendizaje.domain.gateway.ProductGateway
 import com.webflux.camilo.personal.autoaprendizaje.domain.model.Producto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FindByIdUseCase {
+public class FindProductoByIdUseCase {
 
     private final ProductGateway productGateway;
 

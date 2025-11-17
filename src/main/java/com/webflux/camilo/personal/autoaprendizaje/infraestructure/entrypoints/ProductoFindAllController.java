@@ -1,8 +1,9 @@
 package com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints;
 
 
-import com.webflux.camilo.personal.autoaprendizaje.domain.usecase.FindAllUseCase;
-import com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.mapper.ProductoDTOMapper;
+import com.webflux.camilo.personal.autoaprendizaje.domain.usecase.FindCategoriaByIdUseCase;
+import com.webflux.camilo.personal.autoaprendizaje.domain.usecase.FindProductoAllUseCase;
+import com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.mapper.ProductoResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,17 +14,21 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductoFindAllController {
 
-    private final FindAllUseCase useCase;
-    private final ProductoDTOMapper mapper;
+    private final FindProductoAllUseCase useCase;
+    private final FindCategoriaByIdUseCase findCategoriaByIdUseCase;
+    private final ProductoResponseMapper mapper;
 
     @GetMapping({"/productos", "/"})
     public Mono<String> listarProductos(Model model) {
         var productosFlux = useCase.findAll()
+                .flatMap(producto ->
+                        findCategoriaByIdUseCase.findById(producto.getIdCategoria())
+                                .map(categoria -> mapper.toDTO(producto, categoria))
+                )
                 .collectList()
-                .map(mapper::toDTOList)
-                .flatMap(productos->{
+                .map(productos -> {
                     model.addAttribute("productos", productos);
-                    return Mono.just("productos");
+                    return "productos";
                 });
 
         return productosFlux;

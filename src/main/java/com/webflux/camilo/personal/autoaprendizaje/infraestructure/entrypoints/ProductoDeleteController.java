@@ -1,7 +1,7 @@
 package com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints;
 
 import org.springframework.ui.Model;
-import com.webflux.camilo.personal.autoaprendizaje.domain.usecase.DeleteByIdUseCase;
+import com.webflux.camilo.personal.autoaprendizaje.domain.usecase.DeleteProductoByIdUseCase;
 import com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.commons.validator.FormValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,13 +13,13 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductoDeleteController {
 
-    private final DeleteByIdUseCase deleteByIdUseCase;
+    private final DeleteProductoByIdUseCase deleteProductoByIdUseCase;
 
     @GetMapping("/eliminar-producto/{id}")
     public Mono<String> eliminarProducto(@PathVariable("id") String idProducto, Model model) {
 
         return FormValidator.validatePathParam(idProducto, model, "productos", "id")
-                .switchIfEmpty(deleteByIdUseCase.deletedById(idProducto)
+                .switchIfEmpty(deleteProductoByIdUseCase.deletedById(idProducto)
                                 .thenReturn("redirect:/productos?deleted=true"));
     }
 

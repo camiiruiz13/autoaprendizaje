@@ -9,6 +9,7 @@ import com.webflux.camilo.personal.autoaprendizaje.infraestructure.driveradapter
 import com.webflux.camilo.personal.autoaprendizaje.infraestructure.driveradapters.mongodb.repositories.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.data.mapping.MappingException;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -78,31 +79,34 @@ public class ProductoAdapter implements ProductGateway {
 
     @Override
     public Mono<Producto> findById(String idProducto) {
-        return repository.findById(idProducto)
+
+        return repository.findById(new ObjectId(idProducto))
+                .map(modelMapper::toModel)
+                .doOnSubscribe(s -> log.info("Buscando producto con ID={}", idProducto))
                 .switchIfEmpty(Mono.error(new DomainException(
                         ErrorMessage.PRODUCT_NOT_FOUND.getCode(),
-                        ErrorMessage.PRODUCT_NOT_FOUND.getMessage()
-                ))).map(modelMapper::toModel)
-                .doOnSubscribe(sub -> log.info("Buscando producto con ID: {}", idProducto))
-                .doOnSuccess(p -> log.info("Producto encontrado: {}", p.getIdProducto()))
-                .onErrorMap(
-                        error -> (error instanceof MappingException || error instanceof NullPointerException),
+                        ErrorMessage.PRODUCT_NOT_FOUND.getMessage())))
+                .onErrorMap(error ->
+                                (error instanceof MappingException || error instanceof NullPointerException),
                         error -> {
-                            log.error("Error en el mapeo Producto ↔ Documento (findById {}): {}", idProducto, error.getMessage(), error);
+                            log.error("Error en mapeo Producto ({}) -> {}",
+                                    idProducto, error.getMessage());
                             return new TechnicalException(
                                     ErrorMessage.MAPPING_ERROR_PRODUCTO.getCode(),
                                     ErrorMessage.MAPPING_ERROR_PRODUCTO.getMessage(),
-                                    error
-                            );
+                                    error);
                         }
-                ) .onErrorMap(error -> {
-                    if (error instanceof DomainException) return error; // no lo toca
-                    log.error("Error técnico general al buscar producto {}: {}", idProducto, error.getMessage(), error);
+                )
+                .onErrorMap(error -> {
+                    if (error instanceof DomainException) return error;
+
+                    log.error("Error técnico al buscar producto {}: {}",
+                            idProducto, error.getMessage());
+
                     return new TechnicalException(
                             ErrorMessage.TECHNICAL_ERROR_RETRIEVE_PRODUCTO.getCode(),
                             ErrorMessage.TECHNICAL_ERROR_RETRIEVE_PRODUCTO.getMessage(),
-                            error
-                    );
+                            error);
                 });
     }
 

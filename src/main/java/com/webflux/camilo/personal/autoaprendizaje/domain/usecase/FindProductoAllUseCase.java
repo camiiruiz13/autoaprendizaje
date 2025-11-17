@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FindAllUseCase {
+public class FindProductoAllUseCase {
 
     private final ProductGateway productGateway;
 

@@ -1,5 +1,6 @@
 package com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints;
 
+import com.webflux.camilo.personal.autoaprendizaje.domain.usecase.FindCategoriesAllUseCase;
 import org.springframework.ui.Model;
 import com.webflux.camilo.personal.autoaprendizaje.infraestructure.entrypoints.dto.request.ProductoRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +12,14 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ProductoFormController {
 
+    private final FindCategoriesAllUseCase findCategoriesAllUseCase;
+
     @GetMapping("/crear-producto")
     public Mono<String> saveProducto(Model model) {
         model.addAttribute("producto", new ProductoRequestDTO());
         model.addAttribute("modoEdicion", false);
-        return Mono.just("crear-producto");
+        return findCategoriesAllUseCase.findAll().collectList()
+                .doOnNext(categorias -> model.addAttribute("categorias", categorias))
+                .thenReturn("crear-producto");
     }
 }
